@@ -27,10 +27,12 @@ class Precondition(PipelineObject):
                 id=id,
                 type='S3PrefixNotEmpty',
                 s3Prefix=s3Prefix if s3Prefix is not None else "#{node.directoryPath}",
+                **kwargs
             )
         else:
             super(Precondition, self).__init__(
                 id=id,
                 type='S3KeyExists',
                 s3Prefix=s3Prefix if s3Prefix is not None else "#{node.filePath}",
+                **kwargs
             )
