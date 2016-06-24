@@ -18,6 +18,7 @@ class LoadRedshiftStep(ETLStep):
                  max_errors=None,
                  replace_invalid_char=None,
                  compression=None,
+                 additional_options=None,
                  **kwargs):
         """Constructor for the LoadRedshiftStep class
 
@@ -55,6 +56,8 @@ class LoadRedshiftStep(ETLStep):
         if replace_invalid_char:
             command_options.append(
                 "ACCEPTINVCHARS AS '%s'" %replace_invalid_char)
+        if additional_options:
+            command_options.append(additional_options)
 
         self.create_pipeline_object(
             object_class=RedshiftCopyActivity,
