@@ -7,7 +7,6 @@ from ..utils import constants as const
 from ..utils.exceptions import ETLInputError
 from .pipeline_object import PipelineObject
 from .schedule import Schedule
-from IPython import embed
 
 
 class Property(PipelineObject):

@@ -9,7 +9,6 @@ from StringIO import StringIO
 from copy import deepcopy
 from datetime import datetime
 from datetime import timedelta
-from IPython import embed
 
 from ..config import Config
 from .utils import process_steps

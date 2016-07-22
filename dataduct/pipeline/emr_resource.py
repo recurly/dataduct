@@ -9,7 +9,6 @@ from ..utils.exceptions import ETLInputError
 from .pipeline_object import PipelineObject
 from .schedule import Schedule
 from .emr_configuration import EmrConfiguration
-from IPython import embed
 
 config = Config()
 NUM_CORE_INSTANCES = config.emr.get('NUM_CORE_INSTANCES', const.NONE)
