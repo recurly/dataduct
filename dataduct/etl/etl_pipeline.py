@@ -9,6 +9,7 @@ from StringIO import StringIO
 from copy import deepcopy
 from datetime import datetime
 from datetime import timedelta
+from IPython import embed
 
 from ..config import Config
 from .utils import process_steps
@@ -22,6 +23,8 @@ from ..pipeline import PostgresDatabase
 from ..pipeline import S3Node
 from ..pipeline import SNSAlarm
 from ..pipeline import Schedule
+from ..pipeline import EmrConfiguration
+from ..pipeline import Property
 from ..pipeline.utils import list_formatted_instance_details
 from ..pipeline.utils import list_pipelines
 
@@ -342,10 +345,30 @@ class ETLPipeline(object):
                 overall_bootstrap = bootstrap
             self.emr_cluster_config['bootstrap'] = overall_bootstrap
 
+            emr_configurationv4 = config.emr['EMR_CONFIGURATION']
+
+            emr_configurationv4 = \
+                    [
+                        self.create_pipeline_object(
+                          object_class=EmrConfiguration,
+                          classification=conf['CLASSIFICATION'],
+                          properties = [
+                              self.create_pipeline_object(
+                                  object_class=Property,
+                                  key=props['KEY'],
+                                  value=props['VALUE']
+                                  )
+                              for props in conf['PROPERTIES']
+                          ]
+                        )
+                        for conf in emr_configurationv4 
+                    ]
+
             self._emr_cluster = self.create_pipeline_object(
                 object_class=EmrResource,
                 s3_log_dir=self.s3_log_dir,
                 schedule=self.schedule,
+                emr_configuration=emr_configurationv4,
                 **self.emr_cluster_config
             )
 
