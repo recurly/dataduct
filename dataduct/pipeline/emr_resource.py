@@ -8,6 +8,7 @@ from ..utils import constants as const
 from ..utils.exceptions import ETLInputError
 from .pipeline_object import PipelineObject
 from .schedule import Schedule
+from .emr_configuration import EmrConfiguration
 
 config = Config()
 NUM_CORE_INSTANCES = config.emr.get('NUM_CORE_INSTANCES', const.NONE)
@@ -19,9 +20,13 @@ CLUSTER_TIMEOUT = config.emr.get('CLUSTER_TIMEOUT', const.DEFAULT_TIMEOUT)
 HADOOP_VERSION = config.emr.get('HADOOP_VERSION', const.NONE)
 HIVE_VERSION = config.emr.get('HIVE_VERSION', const.NONE)
 PIG_VERSION = config.emr.get('PIG_VERSION', const.NONE)
-CLUSTER_AMI = config.emr.get('CLUSTER_AMI', '2.4.7')
+CLUSTER_AMI = config.emr.get('CLUSTER_AMI', const.NONE)
 DEFAULT_BOOTSTRAP = config.emr.get('DEFAULT_BOOTSTRAP', [])
+APPLICATIONS = config.emr.get('APPLICATIONS', [])
+RELEASE_LABEL = config.emr.get('RELEASE_LABEL', const.NONE)
 KEY_PAIR = config.etl.get('KEY_PAIR', const.NONE)
+SUBNET_ID = config.emr.get('SUBNET_ID', const.NONE)
+EMR_CONFIGURATION = config.emr.get('EMR_CONFIGURATION', const.NONE)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -46,7 +51,12 @@ class EmrResource(PipelineObject):
                  hadoop_version=HADOOP_VERSION,
                  install_hive=HIVE_VERSION,
                  install_pig=PIG_VERSION,
-                 ami_version=CLUSTER_AMI):
+                 applications=APPLICATIONS,
+                 ami_version=CLUSTER_AMI,
+                 release_label=RELEASE_LABEL,
+                 emr_configuration=EMR_CONFIGURATION,
+                 subnet_id=SUBNET_ID
+                 ):
         """Constructor for the Ec2Resource class
 
         Args:
@@ -67,6 +77,9 @@ class EmrResource(PipelineObject):
             ami_version(str): ami version for the Emr resource
         """
 
+        if not (isinstance(emr_configuration, list) or emr_configuration is None):
+            raise ETLInputError('Emr Configuration must me EmrConfiguration type')
+       
         # Validate inputs
         if not isinstance(schedule, Schedule):
             raise ETLInputError(
@@ -88,6 +101,7 @@ class EmrResource(PipelineObject):
             coreInstanceType=instance_size,
             terminateAfter=terminate_after,
             bootstrapAction=self.bootstrap,
+            applications=applications,
             type='EmrCluster',
             schedule=schedule,
             keyPair=KEY_PAIR,
@@ -97,6 +111,9 @@ class EmrResource(PipelineObject):
             installHive=install_hive,
             pigVersion=install_pig,
             amiVersion=ami_version,
+            releaseLabel=release_label,
+            subnetId=subnet_id,
+            configuration=emr_configuration,
             hadoopVersion=hadoop_version,
         )
 
