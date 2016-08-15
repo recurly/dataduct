@@ -44,7 +44,7 @@ class LoadRedshiftStep(ETLStep):
         )
 
         if avro:
-            command_options = ["FORMAT AS AVRO 'auto' TIMEFORMAT 'epochmillisecs'"]
+            command_options = ["FORMAT AS AVRO 'auto' TIMEFORMAT 'epochmillisecs' TRUNCATECOLUMNS"]
         else:
             command_options = ["DELIMITER '\t' ESCAPE TRUNCATECOLUMNS"]
             command_options.append("NULL AS 'NULL' ")

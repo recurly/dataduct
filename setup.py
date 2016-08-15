@@ -28,7 +28,8 @@ setup(
         'pytimeparse>=1.1.4',
         'PyYAML>=3.11',
         'testfixtures>=4.1.2',
-        'pyprind'
+        'pyprind',
+        'sqlparse>=0.2.0'
     ],
     scripts=['bin/dataduct'],
     classifiers=[
