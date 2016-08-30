@@ -668,8 +668,10 @@ class ETLPipeline(object):
                                      description=self.description,
                                      tags=self.get_tags())
 
-        for pipeline_object in self.pipeline_objects():
+        for i, pipeline_object in enumerate(self.pipeline_objects(), 1):
             self.pipeline.add_object(pipeline_object)
+
+        logger.info("%s objects were added in this pipeline" % i)
 
         # Check for errors
         self.errors = self.pipeline.validate_pipeline_definition()
