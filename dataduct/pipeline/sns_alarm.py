@@ -50,7 +50,8 @@ class SNSAlarm(PipelineObject):
                      'Identifier: ' + pipeline_name,
                      'Object: #{node.name}',
                      'Object Scheduled Start Time: #{node.@scheduledStartTime}',
-                     'Object End Time: #{node.@finishedTime}'
+                     'Object Actual Start Time: #{node.@actualStartTime}',
+                     'Object End Time: #{node.@actualEndTime}'
                ])
             subject = 'Data Pipeline %s succeeded ' % pipeline_name
 
