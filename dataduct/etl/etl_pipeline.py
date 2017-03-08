@@ -43,6 +43,7 @@ S3_ETL_BUCKET = config.etl['S3_ETL_BUCKET']
 MAX_RETRIES = config.etl.get('MAX_RETRIES', const.ZERO)
 S3_BASE_PATH = config.etl.get('S3_BASE_PATH', const.EMPTY_STR)
 SNS_TOPIC_ARN_FAILURE = config.etl.get('SNS_TOPIC_ARN_FAILURE', const.NONE)
+SNS_TOPIC_ARN_SUCCESS = config.etl.get('SNS_TOPIC_ARN_SUCCESS', const.NONE)
 NAME_PREFIX = config.etl.get('NAME_PREFIX', const.EMPTY_STR)
 QA_LOG_PATH = config.etl.get('QA_LOG_PATH', const.QA_STR)
 DP_INSTANCE_LOG_PATH = config.etl.get('DP_INSTANCE_LOG_PATH', const.NONE)
@@ -66,11 +67,12 @@ class ETLPipeline(object):
     # put this here so as not to pollute global namespace. Also makes mocking
     # easier
     DEFAULT_TOPIC_ARN = config.etl.get('DEFAULT_TOPIC_ARN', const.NONE)
+    DEFAULT_TOPIC_ARN_SUCCESS = config.etl.get('DEFAULT_TOPIC_ARN_SUCCESS', const.NONE)
 
     def __init__(self, name, frequency='one-time', ec2_resource_config=None,
                  time_delta=None, emr_cluster_config=None, load_time=None,
                  topic_arn=None, max_retries=MAX_RETRIES, teardown=None,
-                 bootstrap=None, description=None):
+                 bootstrap=None, description=None, topic_arn_success=None):
         """Constructor for the pipeline class
 
         Args:
@@ -107,6 +109,13 @@ class ETLPipeline(object):
             self.topic_arn = self.DEFAULT_TOPIC_ARN
         else:
             self.topic_arn = None
+
+        if topic_arn_success is not None:
+            self.topic_arn_success = topic_arn_success
+        elif self.DEFAULT_TOPIC_ARN_SUCCESS:
+            self.topic_arn_success = self.DEFAULT_TOPIC_ARN_SUCCESS
+        else:
+            self.topic_arn_success = None
 
         if bootstrap is not None:
             self.bootstrap_definitions = bootstrap
@@ -209,6 +218,16 @@ class ETLPipeline(object):
                 topic_arn=self.topic_arn,
                 pipeline_name=self.name,
             )
+        if self.topic_arn_success is None:
+            self.sns_success = None
+        else:
+            self.sns_success = self.create_pipeline_object(
+                object_class=SNSAlarm,
+                topic_arn=self.topic_arn_success,
+                pipeline_name=self.name,
+                failure=False,
+            )
+
         self.default = self.create_pipeline_object(
             object_class=DefaultObject,
             pipeline_log_uri=self.s3_log_dir,
@@ -511,6 +530,7 @@ class ETLPipeline(object):
 
             if is_teardown:
                 step_param['sns_object'] = self.sns
+                step_param['sns_success_object'] = self.sns_success
 
             try:
                 step_class = step_param.pop('step_class')

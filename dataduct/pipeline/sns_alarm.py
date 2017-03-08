@@ -18,31 +18,42 @@ class SNSAlarm(PipelineObject):
     def __init__(self,
                  id,
                  pipeline_name=None,
-                 failure_message=None,
+                 my_message=None,
                  topic_arn=None,
+                 failure=True,
                  **kwargs):
         """Constructor for the SNSAlarm class
 
         Args:
             id(str): id of the object
             pipeline_name(str): frequency type for the pipeline
-            failure_message(str): Message used in SNS on pipeline failures,
+            my_message(str): Message used in SNS,
             **kwargs(optional): Keyword arguments directly passed to base class
         """
 
         if not pipeline_name:
             pipeline_name = "None"
 
-        if not failure_message:
-            failure_message = '\n'.join([
-                'Identifier: ' + pipeline_name,
-                'Object: #{node.name}',
-                'Object Scheduled Start Time: #{node.@scheduledStartTime}',
-                'Error Message: #{node.errorMessage}',
-                'Error Stack Trace: #{node.errorStackTrace}'
-            ])
+        if failure:
+            if not my_message:
+                my_message = '\n'.join([
+                    'Identifier: ' + pipeline_name,
+                    'Object: #{node.name}',
+                    'Object Scheduled Start Time: #{node.@scheduledStartTime}',
+                    'Error Message: #{node.errorMessage}',
+                    'Error Stack Trace: #{node.errorStackTrace}'
+                ])
+            subject = 'Data Pipeline %s failed' % pipeline_name
+        else:
+            if not my_message:
+                my_message = '\n'.join([
+                     'Identifier: ' + pipeline_name,
+                     'Object: #{node.name}',
+                     'Object Scheduled Start Time: #{node.@scheduledStartTime}',
+                     'Object End Time: #{node.@finishedTime}'
+               ])
+            subject = 'Data Pipeline %s succeeded ' % pipeline_name
 
-        subject = 'Data Pipeline %s failed' % pipeline_name
 
         if topic_arn is None:
             topic_arn = SNS_TOPIC_ARN_FAILURE
@@ -53,5 +64,5 @@ class SNSAlarm(PipelineObject):
             topicArn=topic_arn,
             role=ROLE,
             subject=subject,
-            message=failure_message,
+            message=my_message,
         )
