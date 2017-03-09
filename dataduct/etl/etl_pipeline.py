@@ -521,7 +521,6 @@ class ETLPipeline(object):
         steps = []
         steps_params = process_steps(steps_params)
         for step_param in steps_params:
-
             # Assume that the preceding step is the input if not specified
             if isinstance(input_node, S3Node) and \
                     'input_node' not in step_param and \
@@ -531,6 +530,7 @@ class ETLPipeline(object):
             if is_teardown:
                 step_param['sns_object'] = self.sns
                 step_param['sns_success_object'] = self.sns_success
+                step_param['name'] = "Teardown"
 
             try:
                 step_class = step_param.pop('step_class')
