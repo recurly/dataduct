@@ -34,7 +34,8 @@ class MysqlNode(PipelineObject):
         if not depends_on:
             depends_on = list()
 
-        connection_string = "jdbc:mysql://" + host + ":3306/" + database
+        connection_string = "jdbc:mysql://" + host + ":3306/" + database +
+            "?zeroDateTimeBehavior=convertToNull"
 
         kwargs = {
             'id': id,
@@ -56,7 +57,7 @@ class MysqlNode(PipelineObject):
         Returns:
             result(str): database name for this MySQL node
         """
-        return self['connectionString'].split("/").pop()
+        return self['connectionString'].split("?")[0].split("/").pop()
 
     @property
     def table(self):
