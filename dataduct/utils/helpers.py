@@ -153,7 +153,9 @@ def get_modified_s3_path(path):
     config = Config()
     if path is None:
         return None
-    return path.replace('{S3_BASE_PATH}', config.etl.get('S3_BASE_PATH'))
+    return path\
+            .replace('{S3_BASE_PATH}', config.etl.get('S3_BASE_PATH'))\
+            .replace('{S3_ETL_BUCKET}',config.etl.get('S3_ETL_BUCKET'))
 
 
 def stringify_credentials(access_key, secret_key, token=None):

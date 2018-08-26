@@ -13,3 +13,4 @@ mock
 pytimeparse
 pyprind
 requests
+sqlparse>=0.2.0

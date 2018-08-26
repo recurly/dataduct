@@ -17,6 +17,9 @@ class LoadRedshiftStep(ETLStep):
                  insert_mode="TRUNCATE",
                  max_errors=None,
                  replace_invalid_char=None,
+                 compression=None,
+                 avro=None,
+                 additional_options=None,
                  **kwargs):
         """Constructor for the LoadRedshiftStep class
 
@@ -40,13 +43,25 @@ class LoadRedshiftStep(ETLStep):
             table_name=table,
         )
 
-        command_options = ["DELIMITER '\t' ESCAPE TRUNCATECOLUMNS"]
-        command_options.append("NULL AS 'NULL' ")
+        if avro:
+            command_options = ["FORMAT AS AVRO 'auto' TIMEFORMAT 'epochmillisecs' TRUNCATECOLUMNS"]
+        else:
+            command_options = ["DELIMITER '\t' ESCAPE TRUNCATECOLUMNS"]
+            command_options.append("NULL AS 'NULL' ")
+
+        if compression == "gzip":
+          command_options.append("GZIP")
+        elif compression == "bzip2":
+          command_options.append("BZIP2")
+        elif compression == "lzo":
+          command_options.append("lzop")
         if max_errors:
             command_options.append('MAXERROR %d' % int(max_errors))
         if replace_invalid_char:
             command_options.append(
                 "ACCEPTINVCHARS AS '%s'" %replace_invalid_char)
+        if additional_options:
+            command_options.append(additional_options)
 
         self.create_pipeline_object(
             object_class=RedshiftCopyActivity,

@@ -58,8 +58,11 @@ class TransformStep(ETLStep):
                                 ' and directory allowed')
 
         # Create output_node based on output_path
-        base_output_node = self.create_s3_data_node(
-            self.get_output_s3_path(get_modified_s3_path(output_path)))
+        if no_output:
+            base_output_node = None
+        else:
+            base_output_node = self.create_s3_data_node(
+                self.get_output_s3_path(get_modified_s3_path(output_path)))
 
         script_arguments = self.translate_arguments(script_arguments)
         if script_arguments is None:
@@ -166,7 +169,7 @@ class TransformStep(ETLStep):
     def input_format(key, value):
         """Format the key and value to command line arguments
         """
-        return ''.join('--', key, '=', value)
+        return ''.join(['--', key, '=', value])
 
     @classmethod
     def arguments_processor(cls, etl, input_args):
