@@ -32,3 +32,13 @@ limitations under the License.
 .. |coverage-status|
    image:: https://coveralls.io/repos/coursera/dataduct/badge.svg?branch=develop
     :target: https://coveralls.io/r/coursera/dataduct?branch=develop
+
+**Installing dockerized dataduct**
+
+git clone git@github.com:recurly/dataplatform.git
+
+install docker-compose: https://docs.docker.com/compose/install/#install-compose
+
+cd dataplatform
+
+sudo docker-compose build --no-cache --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
