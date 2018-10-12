@@ -37,8 +37,22 @@ limitations under the License.
 
 git clone git@github.com:recurly/dataplatform.git
 
+install docker https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
 install docker-compose: https://docs.docker.com/compose/install/#install-compose
 
 cd dataplatform
 
-sudo docker-compose build --no-cache --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
+clone dataduct inside the datapipeline directory
+
+git clone git@github.com:recurly/dataduct.git
+
+set up docker so it doesn't have to be run as root https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
+
+docker-compose build --no-cache --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
+
+docker network create recurly
+
+docker-compose up -d
+
+test that docker is working: docker exec -it dataplatform_pipelines-build_1 python -c "from dataduct.steps.executors.custom_check import validate_redshift_result; validate_redshift_result('select count(*) from recurly_data.transactions where created_at > current_date', 1, None)"
