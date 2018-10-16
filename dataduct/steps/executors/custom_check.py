@@ -19,5 +19,5 @@ def validate_redshift_result(sql, min_result, max_result, expected_result):
     if max_result and result > max_result:
         raise Exception("result {0} is greater than max {1}".format(result, max_result))
 
-    if expected_result and result != expected_result
+    if expected_result and result != expected_result:
         raise Exception("result {0} is not equal to expected result {1}".format(result, expected_result))
