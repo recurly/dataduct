@@ -35,11 +35,11 @@ limitations under the License.
 
 **Installing dockerized dataduct**
 
-git clone git@github.com:recurly/dataplatform.git
-
 install docker https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 install docker-compose: https://docs.docker.com/compose/install/#install-compose
+
+git clone git@github.com:recurly/dataplatform.git
 
 cd dataplatform
 
@@ -49,10 +49,21 @@ git clone git@github.com:recurly/dataduct.git
 
 set up docker so it doesn't have to be run as root https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
 
-docker-compose build --no-cache --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
+copy AWS creds: sudo cp ~task_runner/.aws/config aws_config
+
+sudo chmod uog+r aws_config
+
+docker-compose build --no-cache
 
 docker network create recurly
 
 docker-compose up -d
 
-test that docker is working: docker exec -it dataplatform_pipelines-build_1 python -c "from dataduct.steps.executors.custom_check import validate_redshift_result; validate_redshift_result('select count(*) from recurly_data.transactions where created_at > current_date', 1, None)"
+test that docker is working: docker exec -it dataplatform_pipelines-build_1 python -c "from dataduct.steps.executors.custom_check import validate_redshift_result"
+
+create a login shell for the task_runner user
+
+sudo chsh -s /bin/bash task_runner
+
+restart the task runner process so it picks up its new permissions: sudo service task-runner restart
+
