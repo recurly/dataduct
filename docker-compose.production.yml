@@ -1,0 +1,19 @@
+version: '2.3'
+networks:
+  default:
+    external:
+      name: recurly
+services:
+  pipelines-qa4:
+    build:
+      context: ${PIPELINES_PATH:-.}
+      target: build
+      args:
+        - ENVIRONMENT=production
+    image: recurly/pipelines_production:latest
+    volumes:
+      - ${PIPELINES_PATH:-.}:/build:cached
+    stdin_open: true
+    cpus: 2
+    mem_limit: 1gb
+    mem_reservation: 256mb
