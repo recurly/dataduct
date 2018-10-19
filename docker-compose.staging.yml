@@ -1,0 +1,19 @@
+version: '2.3'
+networks:
+  default:
+    external:
+      name: recurly
+services:
+  pipelines-staging:
+    build:
+      context: ${PIPELINES_PATH:-.}
+      target: build
+      args:
+        - ENVIRONMENT=staging
+    image: recurly/pipelines_staging:latest
+    volumes:
+      - ${PIPELINES_PATH:-.}:/build:cached
+    stdin_open: true
+    cpus: 2
+    mem_limit: 1gb
+    mem_reservation: 256mb
