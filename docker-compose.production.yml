@@ -4,7 +4,7 @@ networks:
     external:
       name: recurly
 services:
-  pipelines-qa4:
+  pipelines-production:
     build:
       context: ${PIPELINES_PATH:-.}
       target: build
