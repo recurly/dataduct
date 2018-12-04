@@ -23,9 +23,16 @@ QA_STR = 'qa'
 # Commands
 COMMAND_TEMPLATE = 'python -c "from {file} import {func}; {func}()" "$@"'
 
-COUNT_CHECK_COMMAND = COMMAND_TEMPLATE.format(
+DOCKER_COMMAND_TEMPLATE = 'docker exec {image} python -c "from {file} import {func}; {func}()" "$@"'
+
+COUNT_CHECK_COMMAND = DOCKER_COMMAND_TEMPLATE.format(
+    image='dataplatform_pipelines-qa4_1',
     file='dataduct.steps.executors.count_check',
     func='count_check')
+
+#COUNT_CHECK_COMMAND = COMMAND_TEMPLATE.format(
+    #file='dataduct.steps.executors.count_check',
+    #func='count_check')
 
 COLUMN_CHECK_COMMAND = COMMAND_TEMPLATE.format(
     file='dataduct.steps.executors.column_check',
