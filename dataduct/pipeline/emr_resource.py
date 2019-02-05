@@ -117,7 +117,7 @@ class EmrResource(PipelineObject):
             subnetId=subnet_id,
             configuration=emr_configuration,
             hadoopVersion=hadoop_version,
-            SecurityConfiguration=security_config,
+            securityConfiguration=security_config,
         )
 
         if num_task_instances:
