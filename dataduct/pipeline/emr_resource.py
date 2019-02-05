@@ -27,6 +27,7 @@ RELEASE_LABEL = config.emr.get('RELEASE_LABEL', const.NONE)
 KEY_PAIR = config.etl.get('KEY_PAIR', const.NONE)
 SUBNET_ID = config.emr.get('SUBNET_ID', const.NONE)
 EMR_CONFIGURATION = config.emr.get('EMR_CONFIGURATION', const.NONE)
+SECURITY_CONFIGURATION = config.emr.get('SECURITY_CONFIGURATION', const.NONE)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -49,7 +50,6 @@ class EmrResource(PipelineObject):
                  master_instance_size=MASTER_INSTANCE_TYPE,
                  terminate_after=CLUSTER_TIMEOUT,
                  hadoop_version=HADOOP_VERSION,
-                 security_config=None,
                  install_hive=HIVE_VERSION,
                  install_pig=PIG_VERSION,
                  applications=APPLICATIONS,
@@ -107,6 +107,7 @@ class EmrResource(PipelineObject):
             type='EmrCluster',
             schedule=schedule,
             keyPair=KEY_PAIR,
+            securityConfiguration=SECURITY_CONFIGURATION,
             logUri=s3_log_dir,
             emrLogUri=s3_log_dir,
             enableDebugging="true",
@@ -117,7 +118,6 @@ class EmrResource(PipelineObject):
             subnetId=subnet_id,
             configuration=emr_configuration,
             hadoopVersion=hadoop_version,
-            # security_configuration="stage-security",
         )
 
         if num_task_instances:

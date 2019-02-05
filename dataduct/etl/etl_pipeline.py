@@ -388,14 +388,11 @@ class ETLPipeline(object):
                         for conf in emr_configurationv4
                     ]
 
-            emr_configurationv4.append(self.create_pipeline_object(object_class=Property, key='securityConfiguration', value='stage-security'))
-
             self._emr_cluster = self.create_pipeline_object(
                 object_class=EmrResource,
                 s3_log_dir=self.s3_log_dir,
                 schedule=self.schedule,
                 emr_configuration=emr_configurationv4,
-                security_config='stage-security',
                 **self.emr_cluster_config
             )
 
