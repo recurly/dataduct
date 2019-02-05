@@ -136,6 +136,7 @@ class ETLPipeline(object):
         else:
             self.emr_cluster_config = dict()
 
+
         if ec2_resource_config:
             self.ec2_resource_config = ec2_resource_config
         else:
@@ -163,6 +164,7 @@ class ETLPipeline(object):
         self._emr_cluster = None
         self.create_base_objects()
 
+
     def __str__(self):
         """Formatted output when printing the pipeline object
 
@@ -184,6 +186,10 @@ class ETLPipeline(object):
             new_object(PipelineObject): Creates object based on class. Name of
             object is created on its type and index if not provided
         """
+
+        print "create_pipeline_object EMR CLUSTER CONFIG:\n"
+        print self.emr_cluster_config
+
         instance_count = sum([1 for o in self._base_objects.values()
                               if isinstance(o, object_class)])
 
@@ -379,7 +385,7 @@ class ETLPipeline(object):
                               for props in conf['PROPERTIES']
                           ]
                         )
-                        for conf in emr_configurationv4 
+                        for conf in emr_configurationv4
                     ]
 
             self._emr_cluster = self.create_pipeline_object(
@@ -387,8 +393,16 @@ class ETLPipeline(object):
                 s3_log_dir=self.s3_log_dir,
                 schedule=self.schedule,
                 emr_configuration=emr_configurationv4,
+                security_config='stage-security',
                 **self.emr_cluster_config
             )
+
+            print "_emr_cluster created with:\n"
+            print emr_configurationv4
+            print " ^ emr_configurationv4 \n"
+            print self.emr_cluster_config
+            print " ^ emr_cluster_config \n"
+            print "\n"
 
             self.create_bootstrap_steps(const.EMR_CLUSTER_STR)
         return self._emr_cluster

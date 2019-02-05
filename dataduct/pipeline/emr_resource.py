@@ -49,6 +49,7 @@ class EmrResource(PipelineObject):
                  master_instance_size=MASTER_INSTANCE_TYPE,
                  terminate_after=CLUSTER_TIMEOUT,
                  hadoop_version=HADOOP_VERSION,
+                 security_config=None,
                  install_hive=HIVE_VERSION,
                  install_pig=PIG_VERSION,
                  applications=APPLICATIONS,
@@ -72,6 +73,7 @@ class EmrResource(PipelineObject):
             master_instance_size(str):  type of master instance
             terminate_after(str): time to terminate the Emrresource after
             hadoop_version(str): hadoop version to be installed
+            security_config(str): identifier of security configuration to apply
             install_hive(str): version of hive to be installed
             install_pig(str): version of pig to be installed
             ami_version(str): ami version for the Emr resource
@@ -79,7 +81,7 @@ class EmrResource(PipelineObject):
 
         if not (isinstance(emr_configuration, list) or emr_configuration is None):
             raise ETLInputError('Emr Configuration must me EmrConfiguration type')
-       
+
         # Validate inputs
         if not isinstance(schedule, Schedule):
             raise ETLInputError(
@@ -115,6 +117,7 @@ class EmrResource(PipelineObject):
             subnetId=subnet_id,
             configuration=emr_configuration,
             hadoopVersion=hadoop_version,
+            SecurityConfiguration=security_config,
         )
 
         if num_task_instances:

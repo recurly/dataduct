@@ -34,11 +34,14 @@ class PipelineObject(object):
         self.fields = defaultdict(list)
 
         for key, value in kwargs.iteritems():
+            if kwargs.has_key("type") and (kwargs["type"] == "EmrCluster"):
+                print " EmrCluster:PipelineObject[" + str(key) +" ]: " + str(value) +"\n"
             if value is not None:
                 self[key] = value
 
         # additional s3 files that may not appear as an AWS field
         self.additional_s3_files = []
+
 
     @property
     def id(self):

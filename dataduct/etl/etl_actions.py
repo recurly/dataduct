@@ -51,8 +51,16 @@ def create_pipeline(definition):
     steps = definition.pop('steps')
     etl = ETLPipeline(**definition)
 
+
     # Add the steps to the pipeline object
     etl.create_steps(steps)
+
+    print "definition:\n"
+    print definition
+    print "the ETLPipeline:\n"
+    print etl
+    print "----\n"
+
     etl.create_teardown_step()
     logger.info('Created pipeline. Name: %s', etl.name)
     return etl
