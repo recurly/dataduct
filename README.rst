@@ -59,6 +59,10 @@ docker network create recurly
 
 docker-compose up -d
 
+make the container automatically restart when the host restarts:
+
+docker update --restart=unless-stopped <container id>
+
 test that docker is working: docker exec -it dataplatform_pipelines-build_1 python -c "from dataduct.steps.executors.custom_check import validate_redshift_result"
 
 create a login shell for the task_runner user
