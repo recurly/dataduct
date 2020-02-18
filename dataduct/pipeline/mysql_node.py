@@ -41,6 +41,7 @@ class MysqlNode(PipelineObject):
             'type': 'SqlDataNode',
             'schedule': schedule,
             'connectionString': connection_string,
+            'jdbcProperties': [ 'zeroDateTimeBehavior=convertToNull' ],
             'username': username,
             '*password': password,
             'selectQuery': sql,
